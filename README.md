@@ -73,3 +73,10 @@ Lihat `PLAN.md` §"Catatan API yang sudah diverifikasi" untuk bentuk payload len
 | API | `http://localhost:8080` (dari mesin ini) / `http://192.168.19.7:8080` (dari LAN) |
 | Host header wajib | `media-nusantara.com` |
 | CORS | origin `localhost:4321` & `192.168.19.7:4321` harus ditambahkan ke `.env` API (Task 1 di PLAN.md) |
+
+## Landing Corporate
+
+Homepage (`/`) menampilkan landing page corporate (hero, layanan, statistik,
+sekilas profil) dengan berita terbaru di bagian bawah. Arsip berita lengkap
+di `/berita`, profil perusahaan di `/tentang`. Konten corporate saat ini
+mock di `src/lib/company.ts` (lihat `docs/superpowers/specs/2026-08-08-corporate-landing-design.md`).
