@@ -8,7 +8,7 @@ interface Props { title: string; description?: string }
 const { title, description } = Astro.props;
 
 // Tenant info with fallback
-let tenantName = 'Media Nusantara';
+let tenantName = TENANT_HOST;
 let tenantDesc = '';
 try {
   const { data } = await getTenantInfo();

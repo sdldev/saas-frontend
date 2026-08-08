@@ -1,7 +1,7 @@
 import http from 'node:http';
 
 const API_BASE = import.meta.env.API_BASE_URL ?? 'http://localhost:8080';
-const TENANT_HOST = import.meta.env.PUBLIC_TENANT_HOST ?? 'media-nusantara.com';
+export const TENANT_HOST = import.meta.env.PUBLIC_TENANT_HOST ?? 'media-nusantara.com';
 
 export class ApiError extends Error {
   status: number; code: string;

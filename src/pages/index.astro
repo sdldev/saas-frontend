@@ -19,9 +19,8 @@ try {
   const res = await getArticles(page);
   articles = res.data;
   meta = res.meta as Meta | null;
-} catch (e) {
-  if (e instanceof ApiError) errorMsg = 'Konten sedang tidak tersedia';
-  else errorMsg = 'Konten sedang tidak tersedia';
+} catch {
+  errorMsg = 'Konten sedang tidak tersedia';
 }
 ---
 <Base title="Beranda" description="Berita terkini dari berbagai kategori">
