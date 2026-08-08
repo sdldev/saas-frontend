@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getArticles } from '../../lib/api';
+import type { Article, Meta } from '../../lib/api';
+
+let articles: Article[] = [];
+let meta: Meta | null = null;
+let errorMsg = '';
+
+const rawPage = Astro.url.searchParams.get('page');
+const page = (() => {
+  const n = rawPage ? parseInt(rawPage, 10) : 1;
+  return Number.isFinite(n) && n > 0 ? n : 1;
+})();
+
+try {
+  const res = await getArticles(page);
+  articles = res.data;
+  meta = res.meta;
+} catch {
+  errorMsg = 'Konten sedang tidak tersedia';
+}
+---
+<Base title="Berita" description="Arsip berita terbaru dari semua kategori">
+  {errorMsg ? (
+    <div class="error-message">
+      <p>{errorMsg}</p>
+    </div>
+  ) : (
+    <>
+      <div class="article-grid">
+        {articles.map((a) => <ArticleCard article={a} />)}
+      </div>
+      {meta && (
+        <Pagination page={meta.page} totalPages={meta.total_pages} basePath="/berita" />
+      )}
+    </>
+  )}
+</Base>
