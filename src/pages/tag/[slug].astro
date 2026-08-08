@@ -1,0 +1,54 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getTag, ApiError } from '../../lib/api';
+import type { Article, Meta } from '../../lib/api';
+
+const { slug } = Astro.params;
+
+const rawPage = Astro.url.searchParams.get('page');
+const page = (() => {
+  const n = rawPage ? parseInt(rawPage, 10) : 1;
+  return Number.isFinite(n) && n > 0 ? n : 1;
+})();
+
+let articles: Article[] = [];
+let meta: Meta | null = null;
+let tagName = '';
+let totalArticles = 0;
+let errorMsg = '';
+
+try {
+  const res = await getTag(slug!, page);
+  articles = res.data.articles ?? [];
+  meta = res.meta as Meta | null;
+  tagName = res.data.name;
+  totalArticles = res.data.total_articles ?? 0;
+} catch (e) {
+  if (e instanceof ApiError && e.status === 404) {
+    return Astro.redirect('/404');
+  }
+  errorMsg = 'Konten sedang tidak tersedia';
+}
+---
+<Base title={tagName || 'Tag'} description={`Artikel bertanda ${tagName}`}>
+  {errorMsg ? (
+    <div class="error-message">
+      <p>{errorMsg}</p>
+    </div>
+  ) : (
+    <>
+      <section class="tag-header">
+        <h1>{tagName}</h1>
+        <p>{totalArticles} artikel</p>
+      </section>
+      <div class="article-grid">
+        {articles.map((a) => <ArticleCard article={a} />)}
+      </div>
+      {meta && meta.total_pages > 1 && (
+        <Pagination page={meta.page} totalPages={meta.total_pages} basePath={`/tag/${slug}`} />
+      )}
+    </>
+  )}
+</Base>

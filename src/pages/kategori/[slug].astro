@@ -1,0 +1,54 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getCategory, ApiError } from '../../lib/api';
+import type { Article, Meta } from '../../lib/api';
+
+const { slug } = Astro.params;
+
+const rawPage = Astro.url.searchParams.get('page');
+const page = (() => {
+  const n = rawPage ? parseInt(rawPage, 10) : 1;
+  return Number.isFinite(n) && n > 0 ? n : 1;
+})();
+
+let articles: Article[] = [];
+let meta: Meta | null = null;
+let categoryName = '';
+let categoryDesc = '';
+let errorMsg = '';
+
+try {
+  const res = await getCategory(slug!, page);
+  articles = res.data.articles ?? [];
+  meta = res.meta as Meta | null;
+  categoryName = res.data.name;
+  categoryDesc = res.data.description ?? '';
+} catch (e) {
+  if (e instanceof ApiError && e.status === 404) {
+    return Astro.redirect('/404');
+  }
+  errorMsg = 'Konten sedang tidak tersedia';
+}
+---
+<Base title={categoryName || 'Kategori'} description={categoryDesc}>
+  {errorMsg ? (
+    <div class="error-message">
+      <p>{errorMsg}</p>
+    </div>
+  ) : (
+    <>
+      <section class="category-header">
+        <h1>{categoryName}</h1>
+        {categoryDesc && <p>{categoryDesc}</p>}
+      </section>
+      <div class="article-grid">
+        {articles.map((a) => <ArticleCard article={a} />)}
+      </div>
+      {meta && meta.total_pages > 1 && (
+        <Pagination page={meta.page} totalPages={meta.total_pages} basePath={`/kategori/${slug}`} />
+      )}
+    </>
+  )}
+</Base>
