@@ -1,0 +1,18 @@
+---
+import Corporate from '../layouts/Corporate.astro';
+import { PROFILE, CONTACTS, STATS } from '../lib/company';
+---
+<Corporate title="Tentang Kami" description="Profil perusahaan Media Nusantara">
+  <section class="tentang-hero">
+    <div class="container">
+      <h1>Tentang Kami</h1>
+    </div>
+  </section>
+  <div class="tentang-body container">
+    {PROFILE.long.map((p) => <p>{p}</p>)}
+    <div class="tentang-contact">
+      <h4>Hubungi Kami</h4>
+      <p>{CONTACTS.email} · {CONTACTS.phone} · {CONTACTS.address}</p>
+    </div>
+  </div>
+</Corporate>

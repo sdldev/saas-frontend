@@ -1,0 +1,16 @@
+---
+import { STATS } from '../../lib/company';
+---
+<section class="landing-section landing-section-alt">
+  <div class="container">
+    <h2 class="landing-title">Media Nusantara dalam Angka</h2>
+    <div class="landing-stats">
+      {STATS.map((s) => (
+        <div class="landing-stat">
+          <div class="value">{s.value}</div>
+          <div class="label">{s.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

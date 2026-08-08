@@ -1,0 +1,17 @@
+---
+import { SERVICES } from '../../lib/company';
+---
+<section class="landing-section" id="layanan">
+  <div class="container">
+    <h2 class="landing-title">Layanan &amp; Keunggulan</h2>
+    <div class="landing-services-grid">
+      {SERVICES.map((s) => (
+        <div class="landing-service-card">
+          <div class="icon">{s.icon}</div>
+          <h3>{s.title}</h3>
+          <p>{s.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,42 @@
+---
+import type { Category } from '../../lib/api';
+import { CONTACTS } from '../../lib/company';
+
+interface Props { tenantName: string; categories: Category[] }
+const { tenantName, categories } = Astro.props;
+---
+<footer class="corp-footer" id="kontak">
+  <div class="container">
+    <div class="corp-footer-grid">
+      <div>
+        <h4>{tenantName}</h4>
+        <p>Portal berita multi-platform yang menghadirkan jurnalisme independen, cepat, dan berimbang untuk Nusantara.</p>
+      </div>
+      <div>
+        <h4>Kategori</h4>
+        <ul>
+          {categories.map((c) => <li><a href={`/kategori/${c.slug}`}>{c.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h4>Navigasi</h4>
+        <ul>
+          <li><a href="/berita">Berita</a></li>
+          <li><a href="/tentang">Tentang Kami</a></li>
+          <li><a href="/pencarian">Pencarian</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontak</h4>
+        <ul>
+          <li>{CONTACTS.email}</li>
+          <li>{CONTACTS.phone}</li>
+          <li>{CONTACTS.address}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="corp-footer-bottom">
+      &copy; {new Date().getFullYear()} {tenantName}. Hak cipta dilindungi.
+    </div>
+  </div>
+</footer>

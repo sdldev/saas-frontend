@@ -1,0 +1,18 @@
+---
+import type { Article } from '../../lib/api';
+import ArticleCard from '../ArticleCard.astro';
+
+interface Props { articles: Article[] }
+const { articles } = Astro.props;
+---
+<section class="landing-section landing-section-alt">
+  <div class="container">
+    <div class="landing-news-header">
+      <h2>Berita Terbaru</h2>
+      <a href="/berita">Lihat Semua Berita</a>
+    </div>
+    <div class="article-grid">
+      {articles.map((a) => <ArticleCard article={a} />)}
+    </div>
+  </div>
+</section>

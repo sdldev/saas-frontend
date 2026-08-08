@@ -1,0 +1,54 @@
+---
+import { getTenantInfo, getCategory, TENANT_HOST } from '../lib/api';
+import type { Category } from '../lib/api';
+import CorporateFooter from '../components/landing/CorporateFooter.astro';
+import '../styles/global.css';
+
+interface Props { title: string; description?: string }
+const { title, description } = Astro.props;
+
+let tenantName = TENANT_HOST;
+try {
+  const { data } = await getTenantInfo();
+  tenantName = data.name ?? tenantName;
+} catch { /* pakai fallback */ }
+
+// Kategori untuk footer — pola sama dengan Base.astro (skip yang 404)
+const CAT_SLUGS = ['politik', 'ekonomi', 'teknologi', 'olahraga'];
+const catResults = await Promise.allSettled(CAT_SLUGS.map((s) => getCategory(s)));
+const categories: Category[] = [];
+for (const r of catResults) {
+  if (r.status === 'fulfilled') categories.push({ id: r.value.data.id, name: r.value.data.name, slug: r.value.data.slug });
+}
+---
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description ?? `${tenantName} — portal berita`} />
+    <title>{title} — {tenantName}</title>
+  </head>
+  <body>
+    <header class="corp-header">
+      <div class="container">
+        <a href="/" class="corp-logo">{tenantName}</a>
+        <input type="checkbox" id="corp-menu" class="corp-menu-toggle" />
+        <label for="corp-menu" class="corp-hamburger" aria-label="Buka menu">&#9776;</label>
+        <nav class="corp-nav">
+          <ul>
+            <li><a href="/">Beranda</a></li>
+            <li><a href="/#layanan">Layanan</a></li>
+            <li><a href="/tentang">Tentang</a></li>
+            <li><a href="/#kontak">Kontak</a></li>
+            <li><a href="/#kontak" class="corp-cta">Hubungi Kami</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <slot />
+
+    <CorporateFooter tenantName={tenantName} categories={categories} />
+  </body>
+</html>
