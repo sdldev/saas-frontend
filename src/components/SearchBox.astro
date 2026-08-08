@@ -1,0 +1,10 @@
+---
+// Simple search box — form GET ke /pencarian?q=
+const q = Astro.url.searchParams.get('q') ?? '';
+---
+<div class="search-box">
+  <form action="/pencarian" method="get">
+    <input type="text" name="q" value={q} placeholder="Cari artikel..." aria-label="Cari artikel" />
+    <button type="submit">Cari</button>
+  </form>
+</div>

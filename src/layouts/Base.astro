@@ -1,0 +1,67 @@
+---
+import { getTenantInfo, getCategory, TENANT_HOST } from '../lib/api';
+import type { Category } from '../lib/api';
+import SearchBox from '../components/SearchBox.astro';
+import '../styles/global.css';
+
+interface Props { title: string; description?: string }
+const { title, description } = Astro.props;
+
+// Tenant info with fallback
+let tenantName = 'Media Nusantara';
+let tenantDesc = '';
+try {
+  const { data } = await getTenantInfo();
+  tenantName = data.name ?? tenantName;
+  tenantDesc = data.description ?? '';
+} catch { /* use fallback */ }
+
+// Category nav — 4 known slugs, skip 404s
+const CAT_SLUGS = ['politik', 'ekonomi', 'teknologi', 'olahraga'];
+const catResults = await Promise.allSettled(CAT_SLUGS.map((s) => getCategory(s)));
+const categories: Category[] = [];
+for (const r of catResults) {
+  if (r.status === 'fulfilled') categories.push({ id: r.value.data.id, name: r.value.data.name, slug: r.value.data.slug });
+}
+---
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description ?? tenantDesc ?? `${tenantName} — portal berita`} />
+    <title>{title} — {tenantName}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <a href="/" class="site-title">{tenantName}</a>
+        {tenantDesc && <p class="site-desc">{tenantDesc}</p>}
+      </div>
+    </header>
+
+    <nav class="site-nav">
+      <div class="container">
+        <ul>
+          {categories.map((cat) => (
+            <li><a href={`/kategori/${cat.slug}`}>{cat.name}</a></li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <SearchBox />
+    </div>
+
+    <main class="container">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        &copy; {new Date().getFullYear()} {tenantName}. Hak cipta dilindungi.
+      </div>
+    </footer>
+  </body>
+</html>

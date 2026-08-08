@@ -1,17 +1,42 @@
 ---
+import Base from '../layouts/Base.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import Pagination from '../components/Pagination.astro';
+import { getArticles, ApiError } from '../lib/api';
+import type { Article, Meta } from '../lib/api';
 
+let articles: Article[] = [];
+let meta: Meta | null = null;
+let errorMsg = '';
+
+const rawPage = Astro.url.searchParams.get('page');
+const page = (() => {
+  const n = rawPage ? parseInt(rawPage, 10) : 1;
+  return Number.isFinite(n) && n > 0 ? n : 1;
+})();
+
+try {
+  const res = await getArticles(page);
+  articles = res.data;
+  meta = res.meta as Meta | null;
+} catch (e) {
+  if (e instanceof ApiError) errorMsg = 'Konten sedang tidak tersedia';
+  else errorMsg = 'Konten sedang tidak tersedia';
+}
 ---
-
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title="Beranda" description="Berita terkini dari berbagai kategori">
+  {errorMsg ? (
+    <div class="error-message">
+      <p>{errorMsg}</p>
+    </div>
+  ) : (
+    <>
+      <div class="article-grid">
+        {articles.map((a) => <ArticleCard article={a} />)}
+      </div>
+      {meta && (
+        <Pagination page={meta.page} totalPages={meta.total_pages} basePath="/" />
+      )}
+    </>
+  )}
+</Base>

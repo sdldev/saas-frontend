@@ -1,0 +1,20 @@
+---
+interface Props { page: number; totalPages: number; basePath: string }
+const { page, totalPages, basePath } = Astro.props;
+
+const prevUrl = page > 1 ? `${basePath}?page=${page - 1}` : null;
+const nextUrl = page < totalPages ? `${basePath}?page=${page + 1}` : null;
+---
+{totalPages > 1 && (
+<nav class="pagination" aria-label="Navigasi halaman">
+  {prevUrl
+    ? <a href={prevUrl}>&lsaquo; Sebelumnya</a>
+    : <span class="disabled">&lsaquo; Sebelumnya</span>
+  }
+  <span class="page-info">Halaman {page} dari {totalPages}</span>
+  {nextUrl
+    ? <a href={nextUrl}>Berikutnya &rsaquo;</a>
+    : <span class="disabled">Berikutnya &rsaquo;</span>
+  }
+</nav>
+)}
