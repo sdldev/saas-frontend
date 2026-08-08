@@ -13,32 +13,20 @@ const page = (() => {
   return Number.isFinite(n) && n > 0 ? n : 1;
 })();
 
-let articles: Article[] = [];
-let meta: Meta | null = null;
-let categoryName = '';
-let categoryDesc = '';
-let errorMsg = '';
-
+let res;
 try {
-  const res = await getCategory(slug!, page);
-  articles = res.data.articles ?? [];
-  meta = res.meta as Meta | null;
-  categoryName = res.data.name;
-  categoryDesc = res.data.description ?? '';
+  res = await getCategory(slug!, page);
 } catch (e) {
-  if (e instanceof ApiError && e.status === 404) {
-    return Astro.redirect('/404');
-  }
-  errorMsg = 'Konten sedang tidak tersedia';
+  if (e instanceof ApiError && e.status === 404) return Astro.redirect('/404');
+  throw e;
 }
+const articles = res.data.articles ?? [];
+const meta = res.meta as Meta | null;
+const categoryName = res.data.name;
+const categoryDesc = res.data.description ?? '';
 ---
 <Base title={categoryName || 'Kategori'} description={categoryDesc}>
-  {errorMsg ? (
-    <div class="error-message">
-      <p>{errorMsg}</p>
-    </div>
-  ) : (
-    <>
+  <>
       <section class="category-header">
         <h1>{categoryName}</h1>
         {categoryDesc && <p>{categoryDesc}</p>}
@@ -50,5 +38,4 @@ try {
         <Pagination page={meta.page} totalPages={meta.total_pages} basePath={`/kategori/${slug}`} />
       )}
     </>
-  )}
 </Base>

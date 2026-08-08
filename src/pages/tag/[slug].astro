@@ -13,32 +13,20 @@ const page = (() => {
   return Number.isFinite(n) && n > 0 ? n : 1;
 })();
 
-let articles: Article[] = [];
-let meta: Meta | null = null;
-let tagName = '';
-let totalArticles = 0;
-let errorMsg = '';
-
+let res;
 try {
-  const res = await getTag(slug!, page);
-  articles = res.data.articles ?? [];
-  meta = res.meta as Meta | null;
-  tagName = res.data.name;
-  totalArticles = res.data.total_articles ?? 0;
+  res = await getTag(slug!, page);
 } catch (e) {
-  if (e instanceof ApiError && e.status === 404) {
-    return Astro.redirect('/404');
-  }
-  errorMsg = 'Konten sedang tidak tersedia';
+  if (e instanceof ApiError && e.status === 404) return Astro.redirect('/404');
+  throw e;
 }
+const articles = res.data.articles ?? [];
+const meta = res.meta as Meta | null;
+const tagName = res.data.name;
+const totalArticles = res.data.total_articles ?? 0;
 ---
 <Base title={tagName || 'Tag'} description={`Artikel bertanda ${tagName}`}>
-  {errorMsg ? (
-    <div class="error-message">
-      <p>{errorMsg}</p>
-    </div>
-  ) : (
-    <>
+  <>
       <section class="tag-header">
         <h1>{tagName}</h1>
         <p>{totalArticles} artikel</p>
@@ -50,5 +38,4 @@ try {
         <Pagination page={meta.page} totalPages={meta.total_pages} basePath={`/tag/${slug}`} />
       )}
     </>
-  )}
 </Base>
