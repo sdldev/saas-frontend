@@ -1,41 +1,35 @@
 ---
-import Base from '../layouts/Base.astro';
-import ArticleCard from '../components/ArticleCard.astro';
-import Pagination from '../components/Pagination.astro';
-import { getArticles, ApiError } from '../lib/api';
-import type { Article, Meta } from '../lib/api';
+import Corporate from '../layouts/Corporate.astro';
+import HeroSection from '../components/landing/HeroSection.astro';
+import ServicesSection from '../components/landing/ServicesSection.astro';
+import StatsSection from '../components/landing/StatsSection.astro';
+import ProfileSection from '../components/landing/ProfileSection.astro';
+import LatestNewsSection from '../components/landing/LatestNewsSection.astro';
+import { getArticles } from '../lib/api';
+import type { Article } from '../lib/api';
+import { TAGLINE } from '../lib/company';
 
 let articles: Article[] = [];
-let meta: Meta | null = null;
-let errorMsg = '';
-
-const rawPage = Astro.url.searchParams.get('page');
-const page = (() => {
-  const n = rawPage ? parseInt(rawPage, 10) : 1;
-  return Number.isFinite(n) && n > 0 ? n : 1;
-})();
-
+let newsError = false;
 try {
-  const res = await getArticles(page);
+  const res = await getArticles(1, 6);
   articles = res.data;
-  meta = res.meta;
 } catch {
-  errorMsg = 'Konten sedang tidak tersedia';
+  newsError = true;
 }
 ---
-<Base title="Beranda" description="Berita terkini dari berbagai kategori">
-  {errorMsg ? (
-    <div class="error-message">
-      <p>{errorMsg}</p>
-    </div>
-  ) : (
-    <>
-      <div class="article-grid">
-        {articles.map((a) => <ArticleCard article={a} />)}
+<Corporate title="Beranda" description={TAGLINE}>
+  <HeroSection />
+  <ServicesSection />
+  <StatsSection />
+  <ProfileSection />
+  {newsError ? (
+    <section class="landing-section landing-section-alt">
+      <div class="container">
+        <div class="error-message"><p>Berita sedang tidak tersedia</p></div>
       </div>
-      {meta && (
-        <Pagination page={meta.page} totalPages={meta.total_pages} basePath="/" />
-      )}
-    </>
+    </section>
+  ) : (
+    <LatestNewsSection articles={articles} />
   )}
-</Base>
+</Corporate>
