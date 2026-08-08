@@ -1,0 +1,22 @@
+---
+interface Props { banners: any[] }
+const { banners } = Astro.props;
+if (!banners.length) return;
+---
+<div class="banner-slot">
+  {banners.map((b) => (
+    <div class="banner-item">
+      {b.image_url ? (
+        b.target_url ? (
+          <a href={b.target_url} target="_blank" rel="noopener">
+            <img src={b.image_url} alt={b.title ?? 'Iklan'} loading="lazy" />
+          </a>
+        ) : (
+          <img src={b.image_url} alt={b.title ?? 'Iklan'} loading="lazy" />
+        )
+      ) : (
+        <div class="banner-placeholder">Iklan</div>
+      )}
+    </div>
+  ))}
+</div>

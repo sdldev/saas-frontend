@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import BannerSlot from '../../components/BannerSlot.astro';
+import { getArticle, getBanners, ApiError } from '../../lib/api';
+import { formatTanggal, formatViewCount } from '../../lib/format';
+
+const { slug } = Astro.params;
+let article;
+try { article = (await getArticle(slug!)).data; }
+catch (e) {
+  if (e instanceof ApiError && e.status === 404) return Astro.redirect('/404');
+  throw e;
+}
+const banners = await getBanners('after_article').catch(() => ({ data: [] }));
+---
+<Base title={article.title} description={article.summary}>
+  <article class="article-detail">
+    <h1>{article.title}</h1>
+    <div class="meta">
+      <span>{formatTanggal(article.published_at)}</span>
+      <span>{formatViewCount(article.view_count)} dilihat</span>
+    </div>
+    {article.tags?.length > 0 && (
+      <div class="tags">
+        {article.tags.map((tag) => (
+          <a href={`/tag/${tag.slug}`} class="tag-chip">{tag.name}</a>
+        ))}
+      </div>
+    )}
+    <div class="article-body" set:html={article.body_html} />
+  </article>
+
+  {banners.data?.length > 0 && <BannerSlot banners={banners.data} />}
+</Base>
