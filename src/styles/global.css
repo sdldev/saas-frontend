@@ -88,6 +88,8 @@ a:hover { text-decoration: underline; color: var(--color-primary-hover); }
   flex-direction: column;
   gap: 0.5rem;
 }
+.card-thumb-link { display: block; margin: -1rem -1rem 0; overflow: hidden; border-radius: 6px 6px 0 0; }
+.card-thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
 .article-card h2 { font-size: 1.05rem; line-height: 1.35; }
 .article-card .summary { font-size: 0.88rem; color: var(--color-muted); }
 .article-card .meta { font-size: 0.8rem; color: var(--color-muted); display: flex; gap: 0.75rem; flex-wrap: wrap; }
@@ -135,6 +137,11 @@ a:hover { text-decoration: underline; color: var(--color-primary-hover); }
   padding: 0.15rem 0.55rem;
   border-radius: 3px;
 }
+
+/* Article hero image */
+.article-hero { margin: 0 0 1.5rem; }
+.article-hero img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; }
+.article-hero figcaption { font-size: 0.82rem; color: var(--color-muted); margin-top: 0.4rem; }
 
 /* Article body HTML content */
 .article-body { margin-top: 1rem; }

@@ -1,11 +1,18 @@
 ---
 import type { Article } from '../lib/api';
+import { resolveMediaUrl } from '../lib/api';
 import { formatTanggal, formatViewCount } from '../lib/format';
 
 interface Props { article: Article }
 const { article } = Astro.props;
+const thumb = resolveMediaUrl(article.featured_image_url);
 ---
 <article class="article-card">
+  {thumb && (
+    <a href={`/artikel/${article.slug}`} class="card-thumb-link">
+      <img src={thumb} alt={article.title} class="card-thumb" loading="lazy" />
+    </a>
+  )}
   <h2><a href={`/artikel/${article.slug}`}>{article.title}</a></h2>
   <p class="summary">{article.summary}</p>
   {article.tags.length > 0 && (

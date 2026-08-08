@@ -1,6 +1,13 @@
 import http from 'node:http';
 
 const API_BASE = import.meta.env.API_BASE_URL ?? 'http://localhost:8080';
+
+export function resolveMediaUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (/^https?:\/\//.test(url)) return url;
+  if (url.startsWith('/uploads/')) return `${API_BASE}/public/media${url.slice('/uploads'.length)}`;
+  return null;
+}
 export const TENANT_HOST = import.meta.env.PUBLIC_TENANT_HOST ?? 'media-nusantara.com';
 
 export class ApiError extends Error {
@@ -53,6 +60,8 @@ export interface Article {
   category_id: string;
   author_id: string;
   tags: Tag[];
+  featured_image_url?: string | null;
+  featured_image_caption?: string | null;
 }
 
 export interface Category {

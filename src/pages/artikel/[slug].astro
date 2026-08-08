@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import BannerSlot from '../../components/BannerSlot.astro';
-import { getArticle, getBanners, ApiError } from '../../lib/api';
+import { getArticle, getBanners, ApiError, resolveMediaUrl } from '../../lib/api';
 import type { Article } from '../../lib/api';
 import { formatTanggal, formatViewCount } from '../../lib/format';
 
@@ -13,6 +13,7 @@ catch (e) {
   throw e;
 }
 const banners = await getBanners('after_article').catch(() => ({ data: [] }));
+const heroImage = resolveMediaUrl(article.featured_image_url);
 ---
 <Base title={article.title} description={article.summary}>
   <article class="article-detail">
@@ -27,6 +28,14 @@ const banners = await getBanners('after_article').catch(() => ({ data: [] }));
           <a href={`/tag/${tag.slug}`} class="tag-chip">{tag.name}</a>
         ))}
       </div>
+    )}
+    {heroImage && (
+      <figure class="article-hero">
+        <img src={heroImage} alt={article.title} loading="lazy" />
+        {article.featured_image_caption && (
+          <figcaption>{article.featured_image_caption}</figcaption>
+        )}
+      </figure>
     )}
     <div class="article-body" set:html={article.body_html} />
   </article>
