@@ -21,7 +21,7 @@ try {
   throw e;
 }
 const articles = res.data.articles ?? [];
-const meta = res.meta as Meta | null;
+const meta = res.meta;
 const tagName = res.data.name;
 const totalArticles = res.data.total_articles ?? 0;
 ---

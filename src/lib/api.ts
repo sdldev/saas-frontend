@@ -10,7 +10,7 @@ export class ApiError extends Error {
   }
 }
 
-export function apiGet<T>(path: string, query?: Record<string, string | number>): Promise<{ data: T; meta: any }> {
+export function apiGet<T>(path: string, query?: Record<string, string | number>): Promise<{ data: T; meta: Meta | null }> {
   return new Promise((resolve, reject) => {
     const url = new URL(path, API_BASE);
     if (query) for (const [k, v] of Object.entries(query)) url.searchParams.set(k, String(v));
@@ -26,6 +26,10 @@ export function apiGet<T>(path: string, query?: Record<string, string | number>)
       });
     });
     req.on('error', (e) => reject(new ApiError(0, 'NETWORK', e.message)));
+    req.setTimeout(10_000, () => {
+      req.destroy();
+      reject(new ApiError(0, 'TIMEOUT', `Request timeout: ${path}`));
+    });
     req.end();
   });
 }

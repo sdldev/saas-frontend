@@ -18,7 +18,7 @@ const page = (() => {
 try {
   const res = await getArticles(page);
   articles = res.data;
-  meta = res.meta as Meta | null;
+  meta = res.meta;
 } catch {
   errorMsg = 'Konten sedang tidak tersedia';
 }

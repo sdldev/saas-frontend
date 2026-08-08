@@ -20,7 +20,7 @@ if (q) {
   try {
     const res = await searchArticles(q, page);
     articles = res.data.map((a) => ({ ...a, tags: a.tags ?? [] }));
-    meta = res.meta as Meta | null;
+    meta = res.meta;
   } catch (e) {
     if (e instanceof ApiError && e.code === 'SEARCH_UNAVAILABLE') {
       errorMsg = 'Pencarian sedang tidak tersedia';
@@ -30,7 +30,7 @@ if (q) {
   }
 }
 ---
-<Base title="Pencarian" description={`Hasil pencarian untuk "${q}"`}>
+<Base title="Pencarian" description={q ? `Hasil pencarian untuk "${q}"` : 'Cari artikel di Media Nusantara'}>
   <div class="search-box">
     <form action="/pencarian" method="get">
       <input type="text" name="q" value={q} placeholder="Cari artikel..." aria-label="Cari artikel" />

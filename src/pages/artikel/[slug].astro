@@ -2,10 +2,11 @@
 import Base from '../../layouts/Base.astro';
 import BannerSlot from '../../components/BannerSlot.astro';
 import { getArticle, getBanners, ApiError } from '../../lib/api';
+import type { Article } from '../../lib/api';
 import { formatTanggal, formatViewCount } from '../../lib/format';
 
 const { slug } = Astro.params;
-let article;
+let article: Article;
 try { article = (await getArticle(slug!)).data; }
 catch (e) {
   if (e instanceof ApiError && e.status === 404) return Astro.redirect('/404');

@@ -55,7 +55,7 @@ Format respons seragam: `{"data": ..., "meta": {...}, "error": null}` dengan
 - Tag: `breaking-news`, `exclusive`
 - Tanggal publish tersebar 10 hari ke belakang
 
-Lihat `PLAN.md` §"Referensi API Publik" untuk bentuk payload lengkap.
+Lihat `PLAN.md` §"Catatan API yang sudah diverifikasi" untuk bentuk payload lengkap.
 
 ## Lingkungan pengembangan
 
