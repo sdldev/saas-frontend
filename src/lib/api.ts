@@ -5,7 +5,7 @@ const API_BASE = import.meta.env.API_BASE_URL ?? 'http://localhost:8080';
 export function resolveMediaUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   if (/^https?:\/\//.test(url)) return url;
-  if (url.startsWith('/uploads/')) return `${API_BASE}/public/media${url.slice('/uploads'.length)}`;
+  if (url.startsWith('/uploads/')) return `/media${url.slice('/uploads'.length)}`;
   return null;
 }
 export const TENANT_HOST = import.meta.env.PUBLIC_TENANT_HOST ?? 'media-nusantara.com';

@@ -1,0 +1,43 @@
+---
+import http from 'node:http';
+
+const API_BASE = import.meta.env.API_BASE_URL ?? 'http://localhost:8080';
+
+const TENANT_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const FILE_RE = /^[a-f0-9]{16}\.webp$/;
+
+const raw = Astro.params.path ?? '';
+const parts = raw.split('/');
+
+if (parts.length !== 2 || !TENANT_RE.test(parts[0]) || !FILE_RE.test(parts[1])) {
+  return new Response('Not found', { status: 404 });
+}
+
+const upstreamUrl = `${API_BASE}/public/media/${parts[0]}/${parts[1]}`;
+
+const imageBuffer: Buffer = await new Promise((resolve, reject) => {
+  const req = http.get(upstreamUrl, (res) => {
+    if (res.statusCode !== 200) {
+      res.resume();
+      return reject(new Error(`upstream ${res.statusCode}`));
+    }
+    const chunks: Buffer[] = [];
+    res.on('data', (c: Buffer) => chunks.push(c));
+    res.on('end', () => resolve(Buffer.concat(chunks)));
+    res.on('error', reject);
+  });
+  req.on('error', reject);
+  req.setTimeout(10_000, () => { req.destroy(); reject(new Error('timeout')); });
+}).catch(() => null);
+
+if (!imageBuffer) {
+  return new Response('Not found', { status: 404 });
+}
+
+return new Response(imageBuffer, {
+  headers: {
+    'Content-Type': 'image/webp',
+    'Cache-Control': 'public, max-age=86400',
+  },
+});
+---
