@@ -167,3 +167,7 @@ a:hover { text-decoration: underline; color: var(--color-primary-hover); }
   padding: 3rem 1rem;
   color: var(--color-muted);
 }
+.error-page {
+  text-align: center;
+  padding: 4rem 1rem;
+}

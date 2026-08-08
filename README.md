@@ -3,8 +3,12 @@
 Frontend publik (Astro SSG/SSR) untuk situs berita tenant pada CMS multi-tenant.
 Mengkonsumsi endpoint `/public/*` dari `cms-api` — tanpa autentikasi.
 
-> **Status:** belum ada kode. Mulai dari `PLAN.md` (rencana implementasi lengkap
-> per-task untuk dieksekusi di sesi baru).
+> **Status:** Implementasi selesai — lihat Quick Start untuk menjalankan.
+
+```bash
+npm run dev      # dev di :4321
+npm run build && node dist/server/entry.mjs   # preview production
+```
 
 ## Arsitektur singkat
 
