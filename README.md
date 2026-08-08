@@ -57,6 +57,13 @@ Format respons seragam: `{"data": ..., "meta": {...}, "error": null}` dengan
 
 Lihat `PLAN.md` §"Catatan API yang sudah diverifikasi" untuk bentuk payload lengkap.
 
+## Featured Image (Thumbnail)
+
+- Setiap artikel memiliki field `featured_image_url` yang ditampilkan sebagai thumbnail di kartu artikel (`ArticleCard`).
+- Gambar di-cache via endpoint publik: `GET /public/media/{tenant}/{file}` (API :8080).
+- Rute `/kategori/*` dan `/tag/*` menampilkan thumbnail; rute pencarian bergantung pada API yang mengembalikan `featured_image_url` (saat ini belum disertakan oleh endpoint pencarian).
+- Rencana terdokumentasi di `PLAN-GAMBAR.md`.
+
 ## Lingkungan pengembangan
 
 | Item | Nilai |
